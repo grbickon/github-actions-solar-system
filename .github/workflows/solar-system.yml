@@ -29,7 +29,7 @@ jobs:
           with: 
             path: ~/.npm
             key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-            
+
         - name: Install Dependencies
           run: npm install
     
@@ -75,3 +75,22 @@ jobs:
           name: Code-Coverage-Result
           path: coverage
           retention-days: 5
+
+    docker:
+      name: Docker Build and Push
+      needs: [code-coverage, unit-testing]
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout repo
+          uses: actions/checkout
+        - name: Registry Login
+          uses: docker/login-action
+          with:
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+        - name: Push image
+          uses: docker/build-push-action
+          with:
+            push: true
+            tags: ghcr.io/${{github.actor}}/solar-system:${{github.sha}}
