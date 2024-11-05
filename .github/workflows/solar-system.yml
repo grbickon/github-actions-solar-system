@@ -77,6 +77,8 @@ jobs:
           retention-days: 5
 
     docker:
+      permissions:
+        packages: write
       name: Docker Build and Push
       needs: [code-coverage, unit-testing]
       runs-on: ubuntu-latest
