@@ -127,3 +127,5 @@ jobs:
             REPLICAS: 2
             IMAGE: 3
             INGRESS_IP: 4
+        - name: Check replace
+          run: cat kubernetes/development/*.yaml
