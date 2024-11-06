@@ -113,3 +113,16 @@ jobs:
             kubeconfig: ${{ secrets.KUBECONFIG }}
         - name: Check K8s
           run: kubectl version --short -o yaml
+        - name: SET IP ENV
+          run: echo "INGRESS_IP=$(kubectl -n ingress-nginx get services ingress-nginx-controller -o jsonpath="{.status.loadBalancer.ingress[0].ip}")" >> "$GITHUB_ENV"
+        - name: Replace tokens
+          uses: cschleiden/replace-tokens@v1
+          with:
+            tokenPrefix: '_{_'
+            tokenSuffix: '_}_'
+            files: '["kubernetes/development/*.yaml"]'
+          env:
+            NAMESPACE: 1
+            REPLICAS: 2
+            IMAGE: 3
+            INGRESS_IP: 4
